@@ -1,0 +1,5 @@
+aquifer_h_perm	1.40E-11
+aquitard_v_perm 	1.4E-13
+aquifer_thickness	7.62
+aquitard_thickness 	1.
+ambient_gas_pressure	1.013E+05
