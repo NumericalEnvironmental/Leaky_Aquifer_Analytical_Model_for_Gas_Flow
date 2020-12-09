@@ -99,16 +99,16 @@ class Polygon:
     def Qn(self, x, well, aiw, reservoir, grid, gas, indx, intake):
         # normal flux vector (kg m^-2 sec^-1) along polygon side      
         y = self.y[indx] + self.m[indx]*(x-self.x[indx])
-        dPw = reservoir.PressureDiff(array(well['x']), array(well['y']), array([[x, y]]), array(well['Q']), gas)        
-        dPwx = reservoir.PressureDiff(array(well['x']), array(well['y']), array([[x+delta, y]]), array(well['Q']), gas)         
-        dPwy = reservoir.PressureDiff(array(well['x']), array(well['y']), array([[x, y+delta]]), array(well['Q']), gas) 
+        dPw = reservoir.PressureDiff(array(well['x']), array(well['y']), [[x, y]], array(well['Q']), gas)        
+        dPwx = reservoir.PressureDiff(array(well['x']), array(well['y']), [[x+delta, y]], array(well['Q']), gas)         
+        dPwy = reservoir.PressureDiff(array(well['x']), array(well['y']), [[x, y+delta]], array(well['Q']), gas) 
         dP = sum(dPw)
         dPx = sum(dPwx)
         dPy = sum(dPwy)        
         if intake:
-            dPaiw = reservoir.PressureDiff(array(aiw['x']), array(aiw['y']), array([[x, y]]), array(aiw['Q']), gas)        
-            dPaiwx = reservoir.PressureDiff(array(aiw['x']), array(aiw['y']), array([[x+delta, y]]), array(aiw['Q']), gas)         
-            dPaiwy = reservoir.PressureDiff(array(aiw['x']), array(aiw['y']), array([[x, y+delta]]), array(aiw['Q']), gas)
+            dPaiw = reservoir.PressureDiff(array(aiw['x']), array(aiw['y']), [[x, y]], array(aiw['Q']), gas)        
+            dPaiwx = reservoir.PressureDiff(array(aiw['x']), array(aiw['y']), [[x+delta, y]], array(aiw['Q']), gas)         
+            dPaiwy = reservoir.PressureDiff(array(aiw['x']), array(aiw['y']), [[x, y+delta]], array(aiw['Q']), gas)
             dP += sum(dPaiw)
             dPx += sum(dPaiwx)
             dPy += sum(dPaiwy)
@@ -187,7 +187,7 @@ def AirOpt(Qc, Pw, aiw, reservoir, gas, xaiw, yaiw):
     for i in range(len(aiw)):    
         xw = aiw['x'].iloc[i]
         yw = aiw['y'].iloc[i]
-        wp = array([[xw, yw]])
+        wp = [[xw, yw]]
         dP = reservoir.PressureDiff(xaiw, yaiw, wp, Qc[i], gas)
         Pc += dP
     return Pc + Pw   
@@ -203,7 +203,7 @@ def AiwFluxes(aiw, well, reservoir, gas):
         xw = well['x'].iloc[i]
         yw = well['y'].iloc[i]
         Qm = well['Q'].iloc[i]
-        wp = array([[xw, yw]])
+        wp = [[xw, yw]]
         dP = reservoir.PressureDiff(xaiw, yaiw, wp, Qm, gas)
         Pw += dP
     Qc = fsolve(AirOpt, Qc0, args=(Pw, aiw, reservoir, gas, xaiw, yaiw))
@@ -225,7 +225,7 @@ def WellPressures(intake, well, aiw, reservoir, gas):
         xw = well['x'].iloc[i]
         yw = well['y'].iloc[i]
         Qm = well['Q'].iloc[i]
-        wp = array([[xw, yw]])
+        wp = [[xw, yw]]
         dP = reservoir.PressureDiff(xPts, yPts, wp, Qm, gas)
         Pr += dP
     if intake:
@@ -233,7 +233,7 @@ def WellPressures(intake, well, aiw, reservoir, gas):
             xw = aiw['x'].iloc[i]
             yw = aiw['y'].iloc[i]
             Qm = aiw['Q'].iloc[i]
-            wp = array([[xw, yw]])
+            wp = [[xw, yw]]
             dP = reservoir.PressureDiff(xPts, yPts, wp, Qm, gas)
             Pr += dP
     return namePts, Pr
@@ -245,7 +245,7 @@ def PressureGrid(wellSet, grid, reservoir, gas):
         xw = wellSet['x'].iloc[i]
         yw = wellSet['y'].iloc[i]
         Qm = wellSet['Q'].iloc[i]
-        wp = array([[xw, yw]])
+        wp = [[xw, yw]]
         dP = reservoir.PressureDiff(grid.x, grid.y, wp, Qm, gas)
         grid.dP += dP
         dPx = reservoir.PressureDiff(grid.x+delta, grid.y, wp, Qm, gas)
